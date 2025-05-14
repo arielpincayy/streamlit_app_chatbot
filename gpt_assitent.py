@@ -10,7 +10,7 @@ st.title("ChatBot Restaurantes del mundo")
 api_key = st.text_input("Introduce tu clave de OpenAI:", type="password")
 
 # 📄 Cargar y preparar el dataset
-df = pd.read_csv("files/Dataset.csv").head(50)  # ⚠️ Reducido por límite de tokens
+df = pd.read_csv("Dataset.csv").head(50)  # ⚠️ Reducido por límite de tokens
 context = df.to_string(index=False)
 
 # 📊 Mostrar visualmente el dataset
