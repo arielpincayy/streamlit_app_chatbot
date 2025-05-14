@@ -23,7 +23,7 @@ table = df.to_dict(orient="records")
 # 🖥️ Interfaz Streamlit
 st.title("Table QA sobre Dataset")
 
-user_question = st.text_input("Haz una pregunta sobre el dataset:")
+user_question = st.text_input("Chat experto en restaurantes del mundo:")
 
 if user_question:
     answer = table_qa(table=table, query=user_question)
