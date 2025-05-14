@@ -16,7 +16,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 table_qa = pipeline("table-question-answering", model="google/tapas-base-finetuned-wtq", device=-1)
 
 # 📄 Cargar dataset limitado
-df = pd.read_csv("files/Dataset.csv").head(250)
+df = pd.read_csv("Dataset.csv").head(250)
 df = df.astype(str)
 table = df.to_dict(orient="records")
 
