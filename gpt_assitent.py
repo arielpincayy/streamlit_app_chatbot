@@ -1,31 +1,45 @@
 import os
-import sys
-import warnings
+import openai
 import pandas as pd
 import streamlit as st
-from transformers import pipeline
-import torch
 
-# 🔧 Correcciones para evitar errores con torch.classes y Streamlit
-sys.modules["torch.classes"] = torch.classes
-os.environ["STREAMLIT_DISABLE_WATCHDOG_WARNINGS"] = "true"
-warnings.filterwarnings("ignore", category=FutureWarning)
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# 🧠 Título de la app
+st.title("Asistente GPT sobre un Dataset")
 
-# ⚙️ Cargar modelo
-table_qa = pipeline("table-question-answering", model="google/tapas-base-finetuned-wtq", device=-1)
+# 🔐 Pedir clave de API
+api_key = st.text_input("Introduce tu clave de OpenAI:", type="password")
 
-# 📄 Cargar dataset limitado
-df = pd.read_csv("Dataset.csv").head(250)
-df = df.astype(str)
-table = df.to_dict(orient="records")
+# 📥 Pregunta del usuario
+user_question = st.text_input("Haz una pregunta sobre el dataset:")
 
-# 🖥️ Interfaz Streamlit
-st.title("Chat experto en restaurantes del mundo")
+# 📄 Cargar y preparar el dataset
+df = pd.read_csv("files/Dataset.csv").head(50)  # ⚠️ Reducido para evitar exceder tokens
+context = df.to_string(index=False)
 
-user_question = st.text_input("Haz una pregunta:")
+# ✅ Solo continuar si hay clave y pregunta
+if api_key and user_question:
+    openai.api_key = api_key
 
-if user_question:
-    answer = table_qa(table=table, query=user_question)
-    st.markdown(f"**Pregunta:** {user_question}")
-    st.markdown(f"**Respuesta:** {answer['answer']}")
+    prompt = f"""
+    Tengo esta tabla de datos de restaurantes:
+
+    {context}
+
+    Responde la siguiente pregunta SOLO basándote en esta tabla. 
+    Si no puedes responder, resume lo que hay en la base de datos, y di que no puedes resonder a la pregunta'.
+
+    Pregunta: {user_question}
+    Respuesta:"""
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=300
+        )
+        answer = response["choices"][0]["message"]["content"]
+        st.markdown(f"**Respuesta:** {answer}")
+
+    except Exception as e:
+        st.error(f"Error al consultar OpenAI: {e}")
