@@ -21,9 +21,9 @@ df = df.astype(str)
 table = df.to_dict(orient="records")
 
 # 🖥️ Interfaz Streamlit
-st.title("Table QA sobre Dataset")
+st.title("Chat experto en restaurantes del mundo")
 
-user_question = st.text_input("Chat experto en restaurantes del mundo:")
+user_question = st.text_input("Haz una pregunta:")
 
 if user_question:
     answer = table_qa(table=table, query=user_question)
