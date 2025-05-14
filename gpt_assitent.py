@@ -13,7 +13,7 @@ api_key = st.text_input("Introduce tu clave de OpenAI:", type="password")
 user_question = st.text_input("Haz una pregunta sobre el dataset:")
 
 # 📄 Cargar y preparar el dataset
-df = pd.read_csv("files/Dataset.csv").head(50)  # ⚠️ Reducido para evitar exceder tokens
+df = pd.read_csv("Dataset.csv").head(50)  # ⚠️ Reducido para evitar exceder tokens
 context = df.to_string(index=False)
 
 # ✅ Solo continuar si hay clave y pregunta
